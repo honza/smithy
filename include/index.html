@@ -1,0 +1,23 @@
+{{ template "header" }}
+
+<h3>{{ .Title }}</h3>
+
+<p>{{ .Description }}</p>
+
+<h3>Projects</h3>
+
+{{range .Repos}}
+    <div class="row">
+        <div class="col-12">
+            {{ if .Meta.Slug }}
+                <h4><a href="/{{ .Meta.Slug }}">{{ .Name }}</a></h4>
+                <p>{{ .Meta.Description }}</p>
+            {{ else }}
+                <h4><a href="/{{ .Name }}">{{ .Name }}</a></h4>
+            {{ end }}
+            <hr>
+        </div>
+    </div>
+{{ end }}
+
+{{ template "footer" }}

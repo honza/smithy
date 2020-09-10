@@ -1,0 +1,20 @@
+{{ template "header" }}
+
+<h1>{{ .RepoName }}</h1>
+<h2>commit {{ .Commit.Hash }}</h2>
+
+<p>Author: {{ .Commit.Author.Name }} <{{ .Commit.Author.Email }}></p>
+
+<p><pre>{{ .Commit.Message }}</pre></p>
+
+<p>
+    <pre>{{ .Commit.Stats }}</pre>
+</p>
+
+<hr>
+
+<div>
+    <pre>{{ .Changes }}</pre>
+</div>
+
+{{ template "footer" }}

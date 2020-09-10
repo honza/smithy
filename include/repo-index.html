@@ -1,0 +1,32 @@
+{{ template "header" }}
+
+{{ $repo := .Name }}
+
+<h1>{{ .Name }}</h1>
+
+<nav class="navbar navbar-expand navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/{{ $repo }}">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}/refs">Refs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}/log">Log</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}/tree">Tree</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+    {{ .Readme }}
+  </div>
+</div>
+
+{{ template "footer" }}

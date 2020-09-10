@@ -1,0 +1,51 @@
+{{ template "header" }}
+
+{{ $repo := .RepoName }}
+{{ $subtree := .SubTree }}
+{{ $ref := .RefName }}
+{{ $path := .Path }}
+
+
+<h1>{{ .RepoName }}</h1>
+
+<nav class="navbar navbar-expand navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}/refs">Refs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $repo }}/log">Log</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/{{ $repo }}/tree">Tree</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+ref: {{ .RefName }}
+
+<p>
+    path: {{ .Path }}
+</p>
+
+<table>
+    {{ range .Files }}
+    <tr>
+        <td>
+            {{ .FileMode }}
+        </td>
+        <td>
+            <a href="/{{ $repo }}/tree/{{ $ref }}/{{ if $path }}{{ $path }}/{{ end }}{{ .Name }}">
+                {{ .Name }}{{ if not .Mode.IsFile }}/{{ end }}
+            </a>
+        </td>
+    </tr>
+    {{ end }}
+</ul>
+
+{{ template "footer" }}
