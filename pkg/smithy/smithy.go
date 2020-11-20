@@ -514,18 +514,18 @@ func LogViewDefault(ctx *gin.Context, urlParts []string) {
 
 func GetChanges(commit *object.Commit) (object.Changes, error) {
 	var changes object.Changes
+	var parentTree *object.Tree
+
 	parent, err := commit.Parent(0)
-	if err != nil {
-		return changes, err
+	if err == nil {
+		parentTree, err = parent.Tree()
+
+		if err != nil {
+			return changes, err
+		}
 	}
 
 	currentTree, err := commit.Tree()
-
-	if err != nil {
-		return changes, err
-	}
-
-	parentTree, err := parent.Tree()
 
 	if err != nil {
 		return changes, err
