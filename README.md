@@ -77,6 +77,12 @@ Demo
 Smithy is currently hosting [itself on my
 domain](https://smithy.honza.ca/smithy).
 
+Contributing
+-------------------------------------------------------------------------------
+
+Contributions are most welcome.  You can open a pull request on
+[GitHub](https://github.com/honza/smithy), or email a patch to `me@honza.ca`.
+
 License
 -------------------------------------------------------------------------------
 
