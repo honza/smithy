@@ -754,18 +754,15 @@ func loadTemplates(smithyConfig SmithyConfig) (*template.Template, error) {
 		},
 	}
 
+	t := template.New("").Funcs(funcs)
+
 	if smithyConfig.Templates.Dir != "" {
 		if !strings.HasSuffix(smithyConfig.Templates.Dir, "*") {
 			smithyConfig.Templates.Dir += "/*"
 		}
-		templ, err := template.ParseGlob(smithyConfig.Templates.Dir)
-		if err != nil {
-			return templ, err
-		}
-		return templ.Funcs(funcs), nil
+		return t.ParseGlob(smithyConfig.Templates.Dir)
 	}
 
-	t := template.New("").Funcs(funcs)
 	statikFS, err := fs.New()
 
 	if err != nil {
