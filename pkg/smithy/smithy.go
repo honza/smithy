@@ -238,6 +238,7 @@ func RepoIndexView(ctx *gin.Context, urlParts []string) {
 	bs, err := ListBranches(repo.Repository)
 
 	if err != nil {
+		Http500(ctx)
 		return
 	}
 
