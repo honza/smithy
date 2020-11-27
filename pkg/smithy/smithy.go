@@ -367,6 +367,7 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		treePath = urlParts[2]
 	}
 
+	parentPath := filepath.Dir(treePath)
 	commitObj, err := r.CommitObject(*revision)
 
 	if err != nil {
@@ -410,11 +411,12 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		}
 		entries := ConvertTreeEntries(subTree.Entries)
 		ctx.HTML(http.StatusOK, "tree.html", gin.H{
-			"RepoName": repoName,
-			"RefName":  refNameString,
-			"SubTree":  out.Name,
-			"Path":     treePath,
-			"Files":    entries,
+			"RepoName":   repoName,
+			"ParentPath": parentPath,
+			"RefName":    refNameString,
+			"SubTree":    out.Name,
+			"Path":       treePath,
+			"Files":      entries,
 		})
 		return
 	}
@@ -438,6 +440,7 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		"RepoName":            repoName,
 		"RefName":             refNameString,
 		"File":                out,
+		"ParentPath":          parentPath,
 		"Path":                treePath,
 		"Contents":            contents,
 		"ContentsHighlighted": template.HTML(syntaxHighlighted),

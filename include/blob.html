@@ -27,9 +27,8 @@
 {{ $subtree := .SubTree }}
 {{ $ref := .RefName }}
 
-ref: {{ .RefName }}
-
-<p>{{ .Path }}</p>
+<p>ref: {{ $ref }}</p>
+<p>./<a href="/{{ $repo }}/tree/{{ $ref }}/{{ .ParentPath }}">{{ .ParentPath }}</a>/{{ .File.Name }}</p>
 
 <hr>
 
