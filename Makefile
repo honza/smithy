@@ -13,3 +13,7 @@ bin/statik:
 
 gofmt:
 	go fmt ./pkg/... ./cmd/...
+
+clean:
+	rm smithy
+	rm -rf pkg/statik
