@@ -596,9 +596,9 @@ func CommitView(ctx *gin.Context, urlParts []string) {
 	}
 
 	ctx.HTML(http.StatusOK, "commit.html", gin.H{
-		"RepoName": repoName,
-		"Commit":   commitObj,
-		"Changes":  template.HTML(formattedChanges),
+		"Name":    repoName,
+		"Commit":  commitObj,
+		"Changes": template.HTML(formattedChanges),
 	})
 }
 
