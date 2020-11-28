@@ -27,7 +27,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/templates templates
+COPY --from=builder /app/include include
 COPY --from=builder /app/config.yaml .
 COPY --from=builder /app/smithy .
 
