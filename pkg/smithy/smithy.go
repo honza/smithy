@@ -670,7 +670,7 @@ type Route struct {
 func CompileRoutes() []Route {
 	// Label is either a repo, a ref
 	// A filepath is a list of labels
-	label := `[a-zA-Z0-9\-~]+`
+	label := `[a-zA-Z0-9\-~\.]+`
 
 	indexUrl := regexp.MustCompile(`^/$`)
 	repoIndexUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)$`)
