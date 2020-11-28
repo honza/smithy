@@ -81,7 +81,9 @@ Contributing
 -------------------------------------------------------------------------------
 
 Contributions are most welcome.  You can open a pull request on
-[GitHub](https://github.com/honza/smithy), or email a patch to `me@honza.ca`.
+[GitHub](https://github.com/honza/smithy), or [email a patch][1] to `me@honza.ca`.
+
+[1]: https://git-send-email.io
 
 License
 -------------------------------------------------------------------------------
