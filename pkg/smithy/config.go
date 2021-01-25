@@ -48,6 +48,7 @@ type GitConfig struct {
 type SmithyConfig struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
+	Host        string `yaml:"host"`
 	Git         GitConfig
 	Static      struct {
 		Root   string
@@ -188,6 +189,7 @@ func New() SmithyConfig {
 	return SmithyConfig{
 		Title:       "Smithy, a lightweight git force",
 		Port:        3456,
+		Host:        "localhost",
 		Description: "Publish your git repositories with ease",
 	}
 }
