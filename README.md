@@ -88,7 +88,6 @@ Contributions are most welcome.  You can open a pull request on
 TODO
 -------------------------------------------------------------------------------
 
-* Add git clone urls
 * Add support for go modules
 * Add routes for commits ending in .patch
 
