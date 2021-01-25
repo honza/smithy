@@ -42,6 +42,8 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/yuin/goldmark"
 
+	"github.com/honza/smithy/pkg/go-git-http"
+
 	_ "github.com/honza/smithy/pkg/statik"
 )
 
@@ -279,7 +281,15 @@ func RepoIndexView(ctx *gin.Context, urlParts []string) {
 		"Tags":     ts,
 		"Readme":   template.HTML(formattedReadme),
 		"Repo":     repo,
+
+		"Host": smithyConfig.Host,
 	})
+}
+
+func RepoGitView(ctx *gin.Context, urlParts []string) {
+	smithyConfig := ctx.MustGet("config").(SmithyConfig)
+	git := githttp.New(smithyConfig.Git.Root)
+	git.ServeHTTP(ctx.Writer, ctx.Request)
 }
 
 func RefsView(ctx *gin.Context, urlParts []string) {
@@ -673,6 +683,7 @@ func CompileRoutes() []Route {
 	label := `[a-zA-Z0-9\-~\.]+`
 
 	indexUrl := regexp.MustCompile(`^/$`)
+	repoGitUrl := regexp.MustCompile(`^/git/(?P<repo>` + label + `)`)
 	repoIndexUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)$`)
 	refsUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/refs$`)
 	logDefaultUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/log$`)
@@ -686,6 +697,7 @@ func CompileRoutes() []Route {
 	return []Route{
 		{Pattern: indexUrl, View: IndexView},
 		{Pattern: repoIndexUrl, View: RepoIndexView},
+		{Pattern: repoGitUrl, View: RepoGitView},
 		{Pattern: refsUrl, View: RefsView},
 		{Pattern: logDefaultUrl, View: LogViewDefault},
 		{Pattern: logUrl, View: LogView},
@@ -832,7 +844,7 @@ func StartServer(cfgFilePath string, debug bool) {
 	fileSystemHandler := InitFileSystemHandler(config)
 
 	routes := CompileRoutes()
-	router.GET("*path", func(ctx *gin.Context) {
+	router.Any("*path", func(ctx *gin.Context) {
 		Dispatch(ctx, routes, fileSystemHandler)
 	})
 
