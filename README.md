@@ -75,7 +75,7 @@ Demo
 -------------------------------------------------------------------------------
 
 Smithy is currently hosting [itself on my
-domain](https://smithy.honza.ca/smithy).
+domain](https://git.pokorny.ca/smithy).
 
 Contributing
 -------------------------------------------------------------------------------
