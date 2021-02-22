@@ -19,6 +19,7 @@ package smithy
 import (
 	"fmt"
 	"io/ioutil"
+	"path"
 	"path/filepath"
 	"sort"
 
@@ -108,7 +109,9 @@ func (sc *SmithyConfig) LoadAllRepositories() error {
 			continue
 		}
 
-		r, err := git.PlainOpen(sc.Git.Root + repo.Name())
+		repoPath := path.Join(sc.Git.Root, repo.Name())
+
+		r, err := git.PlainOpen(repoPath)
 		if err != nil {
 			// Ignore directories that aren't git repositories
 			continue
