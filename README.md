@@ -31,8 +31,8 @@ Installing
 -------------------------------------------------------------------------------
 
 ```
-$ smithy generate > config.yaml
-$ smithy serve --config smithy.yaml
+$ smithy generate > config.yml
+$ smithy serve --config config.yml
 ```
 
 Configuration
