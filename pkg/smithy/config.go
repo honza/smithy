@@ -46,16 +46,18 @@ type GitConfig struct {
 	staticReposBySlug map[string]RepoConfig
 }
 
+type StaticConfig struct {
+	Root   string
+	Prefix string
+}
+
 type SmithyConfig struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
 	Host        string `yaml:"host"`
 	Git         GitConfig
-	Static      struct {
-		Root   string
-		Prefix string
-	}
-	Templates struct {
+	Static      StaticConfig
+	Templates   struct {
 		Dir string
 	}
 	Port int `yaml:"port"`
@@ -194,6 +196,9 @@ func New() SmithyConfig {
 		Port:        3456,
 		Host:        "localhost",
 		Description: "Publish your git repositories with ease",
+		Static: StaticConfig{
+			Prefix: "/static/",
+		},
 	}
 }
 
