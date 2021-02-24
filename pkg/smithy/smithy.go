@@ -42,7 +42,7 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/yuin/goldmark"
 
-	"github.com/honza/smithy/pkg/go-git-http"
+	githttp "github.com/honza/smithy/pkg/go-git-http"
 
 	_ "github.com/honza/smithy/pkg/statik"
 )
@@ -226,6 +226,17 @@ func IndexView(ctx *gin.Context, urlParts []string) {
 	})
 }
 
+func findMainBranch(ctx *gin.Context, repo *git.Repository) (string, *plumbing.Hash, error) {
+	for _, candidate := range []string{"main", "master"} {
+		revision, err := repo.ResolveRevision(plumbing.Revision(candidate))
+		if err == nil {
+			return candidate, revision, nil
+		}
+		ctx.Error(err)
+	}
+	return "", nil, fmt.Errorf("failed to find a 'main' or 'master' branch")
+}
+
 func RepoIndexView(ctx *gin.Context, urlParts []string) {
 	repoName := urlParts[0]
 	smithyConfig := ctx.MustGet("config").(SmithyConfig)
@@ -252,7 +263,7 @@ func RepoIndexView(ctx *gin.Context, urlParts []string) {
 
 	var formattedReadme string
 
-	revision, err := repo.Repository.ResolveRevision(plumbing.Revision("master"))
+	_, revision, err := findMainBranch(ctx, repo.Repository)
 
 	if err == nil {
 		commitObj, err := repo.Repository.CommitObject(*revision)
@@ -358,10 +369,17 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		return
 	}
 
-	refNameString := "master"
+	var refNameString string
 
 	if len(urlParts) > 1 {
 		refNameString = urlParts[1]
+	} else {
+		refNameString, _, err = findMainBranch(ctx, r)
+		if err != nil {
+			ctx.Error(err)
+			Http404(ctx)
+			return
+		}
 	}
 
 	revision, err := r.ResolveRevision(plumbing.Revision(refNameString))
@@ -522,8 +540,24 @@ func LogView(ctx *gin.Context, urlParts []string) {
 }
 
 func LogViewDefault(ctx *gin.Context, urlParts []string) {
-	// TODO: See if we can determine the main branch
-	ctx.Redirect(http.StatusPermanentRedirect, ctx.Request.RequestURI+"/master")
+	repoName := urlParts[0]
+	smithyConfig := ctx.MustGet("config").(SmithyConfig)
+
+	repo, exists := smithyConfig.FindRepo(repoName)
+
+	if !exists {
+		Http404(ctx)
+		return
+	}
+
+	mainBranchName, _, err := findMainBranch(ctx, repo.Repository)
+	if err != nil {
+		ctx.Error(err)
+		Http404(ctx)
+		return
+	}
+
+	ctx.Redirect(http.StatusPermanentRedirect, ctx.Request.RequestURI+"/"+mainBranchName)
 }
 
 func GetChanges(commit *object.Commit) (object.Changes, error) {
