@@ -166,7 +166,11 @@ func FormatMarkdown(input string) string {
 	var buf bytes.Buffer
 	markdown := goldmark.New(
 		goldmark.WithExtensions(
-			highlighting.Highlighting,
+			highlighting.NewHighlighting(
+				highlighting.WithFormatOptions(
+					html.WithClasses(true),
+				),
+			),
 		),
 	)
 
