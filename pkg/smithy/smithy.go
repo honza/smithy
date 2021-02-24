@@ -302,7 +302,7 @@ func RepoIndexView(ctx *gin.Context, urlParts []string) {
 	}
 
 	ctx.HTML(http.StatusOK, "repo-index.html", makeTemplateContext(smithyConfig, gin.H{
-		"Name":     repoName,
+		"RepoName": repoName,
 		"Branches": bs,
 		"Tags":     ts,
 		"Readme":   template.HTML(formattedReadme),
@@ -352,7 +352,7 @@ func RefsView(ctx *gin.Context, urlParts []string) {
 	}
 
 	ctx.HTML(http.StatusOK, "refs.html", makeTemplateContext(smithyConfig, gin.H{
-		"Name":     repoName,
+		"RepoName": repoName,
 		"Branches": bs,
 		"Tags":     ts,
 	}))
@@ -546,9 +546,9 @@ func LogView(ctx *gin.Context, urlParts []string) {
 	}
 
 	ctx.HTML(http.StatusOK, "log.html", makeTemplateContext(smithyConfig, gin.H{
-		"Name":    repoName,
-		"RefName": refNameString,
-		"Commits": commits,
+		"RepoName": repoName,
+		"RefName":  refNameString,
+		"Commits":  commits,
 	}))
 }
 
@@ -656,9 +656,9 @@ func CommitView(ctx *gin.Context, urlParts []string) {
 	}
 
 	ctx.HTML(http.StatusOK, "commit.html", makeTemplateContext(smithyConfig, gin.H{
-		"Name":    repoName,
-		"Commit":  commitObj,
-		"Changes": template.HTML(formattedChanges),
+		"RepoName": repoName,
+		"Commit":   commitObj,
+		"Changes":  template.HTML(formattedChanges),
 	}))
 }
 
