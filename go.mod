@@ -11,5 +11,6 @@ require (
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cobra v1.0.0
 	github.com/yuin/goldmark v1.2.1
+	github.com/yuin/goldmark-highlighting v0.0.0-20200307114337-60d527fdb691
 	gopkg.in/yaml.v2 v2.2.8
 )

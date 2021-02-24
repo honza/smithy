@@ -41,6 +41,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/storer"
 	"github.com/rakyll/statik/fs"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark-highlighting"
 
 	githttp "github.com/honza/smithy/pkg/go-git-http"
 
@@ -163,7 +164,13 @@ func GetReadmeFromCommit(commit *object.Commit) (*object.File, error) {
 
 func FormatMarkdown(input string) string {
 	var buf bytes.Buffer
-	if err := goldmark.Convert([]byte(input), &buf); err != nil {
+	markdown := goldmark.New(
+		goldmark.WithExtensions(
+			highlighting.Highlighting,
+		),
+	)
+
+	if err := markdown.Convert([]byte(input), &buf); err != nil {
 		panic(err)
 	}
 
