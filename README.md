@@ -19,7 +19,7 @@ the like.
 Building
 -------------------------------------------------------------------------------
 
-The only dependency is [Golang](https://golang.org/).
+The only dependency is [Golang](https://golang.org/) 1.15 or higher.
 
 ```
 $ git clone https://github.com/honza/smithy
