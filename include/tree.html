@@ -27,13 +27,9 @@
   </div>
 </nav>
 
-ref: {{ .RefName }}
+<p>ref: {{ .RefName }}</p>
 
 <p><a href="/{{ $repo }}/tree/{{ $ref }}/{{ .ParentPath }}">{{ .ParentPath }}</a>/{{ $subtree}}</p>
-
-<p>
-    path: {{ .Path }}
-</p>
 
 <table>
     {{ range .Files }}
