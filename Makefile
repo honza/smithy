@@ -11,7 +11,7 @@ export CGO_ENABLED=0
 
 all: smithy smithy.yml
 
-smithy: bin/statik
+smithy: bin/statik include/*.html
 	bin/statik -src=include -dest=pkg -f -m
 	go build -ldflags $(LDFLAGS) -o smithy main.go
 
