@@ -215,22 +215,37 @@ func RenderSyntaxHighlighting(file *object.File) (string, error) {
 }
 
 func Http404(ctx *gin.Context) {
-	ctx.HTML(http.StatusNotFound, "404.html", gin.H{})
+	smithyConfig := ctx.MustGet("config").(SmithyConfig)
+	ctx.HTML(http.StatusNotFound, "404.html", makeTemplateContext(smithyConfig, gin.H{}))
 }
 
 func Http500(ctx *gin.Context) {
-	ctx.HTML(http.StatusInternalServerError, "500.html", gin.H{})
+	smithyConfig := ctx.MustGet("config").(SmithyConfig)
+	ctx.HTML(http.StatusInternalServerError, "500.html",
+		makeTemplateContext(smithyConfig, gin.H{}))
+}
+
+func makeTemplateContext(config SmithyConfig, extra gin.H) gin.H {
+	results := gin.H{
+		"Site": gin.H{
+			"Title":       config.Title,
+			"Description": config.Description,
+			"Host":        config.Host,
+		},
+	}
+	for k, v := range extra {
+		results[k] = v
+	}
+	return results
 }
 
 func IndexView(ctx *gin.Context, urlParts []string) {
 	smithyConfig := ctx.MustGet("config").(SmithyConfig)
 	repos := smithyConfig.GetRepositories()
 
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"Repos":       repos,
-		"Title":       smithyConfig.Title,
-		"Description": smithyConfig.Description,
-	})
+	ctx.HTML(http.StatusOK, "index.html", makeTemplateContext(smithyConfig, gin.H{
+		"Repos": repos,
+	}))
 }
 
 func findMainBranch(ctx *gin.Context, repo *git.Repository) (string, *plumbing.Hash, error) {
@@ -293,15 +308,13 @@ func RepoIndexView(ctx *gin.Context, urlParts []string) {
 		}
 	}
 
-	ctx.HTML(http.StatusOK, "repo-index.html", gin.H{
+	ctx.HTML(http.StatusOK, "repo-index.html", makeTemplateContext(smithyConfig, gin.H{
 		"Name":     repoName,
 		"Branches": bs,
 		"Tags":     ts,
 		"Readme":   template.HTML(formattedReadme),
 		"Repo":     repo,
-
-		"Host": smithyConfig.Host,
-	})
+	}))
 }
 
 func RepoGitView(ctx *gin.Context, urlParts []string) {
@@ -345,11 +358,11 @@ func RefsView(ctx *gin.Context, urlParts []string) {
 		ts = []*plumbing.Reference{}
 	}
 
-	ctx.HTML(http.StatusOK, "refs.html", gin.H{
+	ctx.HTML(http.StatusOK, "refs.html", makeTemplateContext(smithyConfig, gin.H{
 		"Name":     repoName,
 		"Branches": bs,
 		"Tags":     ts,
-	})
+	}))
 }
 
 func TreeView(ctx *gin.Context, urlParts []string) {
@@ -421,12 +434,12 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 	if treePath == "" {
 		entries := ConvertTreeEntries(tree.Entries)
 
-		ctx.HTML(http.StatusOK, "tree.html", gin.H{
+		ctx.HTML(http.StatusOK, "tree.html", makeTemplateContext(smithyConfig, gin.H{
 			"RepoName": repoName,
 			"RefName":  refNameString,
 			"Files":    entries,
 			"Path":     treePath,
-		})
+		}))
 		return
 	}
 
@@ -445,14 +458,14 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 			return
 		}
 		entries := ConvertTreeEntries(subTree.Entries)
-		ctx.HTML(http.StatusOK, "tree.html", gin.H{
+		ctx.HTML(http.StatusOK, "tree.html", makeTemplateContext(smithyConfig, gin.H{
 			"RepoName":   repoName,
 			"ParentPath": parentPath,
 			"RefName":    refNameString,
 			"SubTree":    out.Name,
 			"Path":       treePath,
 			"Files":      entries,
-		})
+		}))
 		return
 	}
 
@@ -471,7 +484,7 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		Http404(ctx)
 		return
 	}
-	ctx.HTML(http.StatusOK, "blob.html", gin.H{
+	ctx.HTML(http.StatusOK, "blob.html", makeTemplateContext(smithyConfig, gin.H{
 		"RepoName":            repoName,
 		"RefName":             refNameString,
 		"File":                out,
@@ -479,7 +492,7 @@ func TreeView(ctx *gin.Context, urlParts []string) {
 		"Path":                treePath,
 		"Contents":            contents,
 		"ContentsHighlighted": template.HTML(syntaxHighlighted),
-	})
+	}))
 }
 
 func LogView(ctx *gin.Context, urlParts []string) {
@@ -539,11 +552,11 @@ func LogView(ctx *gin.Context, urlParts []string) {
 		commits = append(commits, c)
 	}
 
-	ctx.HTML(http.StatusOK, "log.html", gin.H{
+	ctx.HTML(http.StatusOK, "log.html", makeTemplateContext(smithyConfig, gin.H{
 		"Name":    repoName,
 		"RefName": refNameString,
 		"Commits": commits,
-	})
+	}))
 }
 
 func LogViewDefault(ctx *gin.Context, urlParts []string) {
@@ -649,11 +662,11 @@ func CommitView(ctx *gin.Context, urlParts []string) {
 		return
 	}
 
-	ctx.HTML(http.StatusOK, "commit.html", gin.H{
+	ctx.HTML(http.StatusOK, "commit.html", makeTemplateContext(smithyConfig, gin.H{
 		"Name":    repoName,
 		"Commit":  commitObj,
 		"Changes": template.HTML(formattedChanges),
-	})
+	}))
 }
 
 func ListBranches(r *git.Repository) ([]*plumbing.Reference, error) {
