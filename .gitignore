@@ -1,3 +1,5 @@
 repos
 bin
 pkg/statik
+smithy.yml
+smithy

@@ -30,13 +30,28 @@ $ ./smithy --help
 Installing
 -------------------------------------------------------------------------------
 
+We provide a make rule for installing/uninstall smithy. It will also install a
+sample configuration file at `/usr/local/share/smithy/smithy.yml` that you can
+later use as a guide.
+
 ```
-$ smithy generate > config.yml
-$ smithy serve --config config.yml
+$ make install
+$ make uninstall
 ```
 
 Configuration
 -------------------------------------------------------------------------------
+
+You can generate a sample configuration by issuing `make smithy.yml` command or
+directly using the smithy binary:
+
+```
+$ make smithy.yml # will generate a smithy.yml file
+$ smithy generate > config.yml
+$ smithy serve --config config.yml
+```
+
+A sample configuration can be:
 
 ``` yaml
 title: Smithy, a lightweight git forge
