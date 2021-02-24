@@ -1,8 +1,8 @@
 {{ template "header" . }}
 
-{{ $repo := .Name }}
+{{ $repo := .RepoName }}
 
-<h1>{{ .Name }}</h1>
+<h1>{{ .RepoName }}</h1>
 
 <nav class="navbar navbar-expand navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
@@ -28,9 +28,9 @@
 <table class="table">
     {{ range .Branches }}
       <tr>
-          <td>{{ .Name.Short }}</td>
-          <td><a href="/{{ $repo }}/log/{{ .Name.Short }}">log</a></td>
-          <td><a href="/{{ $repo }}/tree/{{ .Name.Short }}">tree</a></td>
+          <td>{{ .RepoName.Short }}</td>
+          <td><a href="/{{ $repo }}/log/{{ .RepoName.Short }}">log</a></td>
+          <td><a href="/{{ $repo }}/tree/{{ .RepoName.Short }}">tree</a></td>
       </tr>
     {{ end }}
 </table>
@@ -40,9 +40,9 @@
 <table class="table">
     {{ range .Tags }}
     <tr>
-        <td>{{ .Name.Short }}</td>
-        <td><a href="/{{ $repo }}/log/{{ .Name.Short }}">log</a></td>
-        <td><a href="/{{ $repo }}/tree/{{ .Name.Short }}">tree</a></td>
+        <td>{{ .RepoName.Short }}</td>
+        <td><a href="/{{ $repo }}/log/{{ .RepoName.Short }}">log</a></td>
+        <td><a href="/{{ $repo }}/tree/{{ .RepoName.Short }}">tree</a></td>
     </tr>
     {{ end }}
 </table>
