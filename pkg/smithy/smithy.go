@@ -203,6 +203,7 @@ func RenderSyntaxHighlighting(file *object.File) (string, error) {
 	formatter := html.New(
 		html.WithClasses(true),
 		html.WithLineNumbers(true),
+		html.LineNumbersInTable(true),
 		html.LinkableLineNumbers(true, "L"),
 	)
 
