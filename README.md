@@ -20,6 +20,8 @@ Building
 -------------------------------------------------------------------------------
 
 The only dependency is [Golang](https://golang.org/) 1.15 or higher.
+Contributors to smithy should have the optional
+[scdoc](https://sr.ht/~sircmpwn/scdoc) for generating documentation.
 
 ```
 $ git clone https://github.com/honza/smithy
