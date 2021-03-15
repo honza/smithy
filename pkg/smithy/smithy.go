@@ -39,14 +39,19 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/storer"
-	"github.com/rakyll/statik/fs"
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark-highlighting"
+	highlighting "github.com/yuin/goldmark-highlighting"
+
+	"embed"
 
 	githttp "github.com/honza/smithy/pkg/go-git-http"
-
-	_ "github.com/honza/smithy/pkg/statik"
 )
+
+//go:embed templates
+var templatefiles embed.FS
+
+//go:embed static
+var staticfiles embed.FS
 
 const PAGE_SIZE int = 100
 
@@ -850,18 +855,11 @@ func InitFileSystemHandler(smithyConfig SmithyConfig) http.Handler {
 	var handler http.Handler
 
 	if smithyConfig.Static.Root == "" {
-		fileServer, err := fs.New()
-
-		if err != nil {
-			return http.NotFoundHandler()
-		}
-
-		handler = http.FileServer(fileServer)
+		handler = http.FileServer(http.FS(staticfiles))
 	} else {
 		handler = http.FileServer(http.Dir(smithyConfig.Static.Root))
+		handler = http.StripPrefix(smithyConfig.Static.Prefix, handler)
 	}
-
-	handler = http.StripPrefix(smithyConfig.Static.Prefix, handler)
 
 	return handler
 }
@@ -917,19 +915,7 @@ func loadTemplates(smithyConfig SmithyConfig) (*template.Template, error) {
 		return t.ParseGlob(smithyConfig.Templates.Dir)
 	}
 
-	statikFS, err := fs.New()
-
-	if err != nil {
-		return t, err
-	}
-
-	root, err := statikFS.Open("/")
-
-	if err != nil {
-		return t, err
-	}
-
-	files, err := root.Readdir(0)
+	files, err := templatefiles.ReadDir("templates")
 
 	if err != nil {
 		return t, err
@@ -939,7 +925,7 @@ func loadTemplates(smithyConfig SmithyConfig) (*template.Template, error) {
 		if !strings.HasSuffix(file.Name(), ".html") {
 			continue
 		}
-		f, err := statikFS.Open("/" + file.Name())
+		f, err := templatefiles.Open("templates/" + file.Name())
 		if err != nil {
 			return t, err
 		}

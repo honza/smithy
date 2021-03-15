@@ -13,8 +13,7 @@ export CGO_ENABLED=0
 
 all: smithy smithy.yml
 
-smithy: bin/statik include/*.html
-	bin/statik -src=include -dest=pkg -f -m
+smithy: pkg/smithy/*
 	go build -ldflags $(LDFLAGS) -o smithy main.go
 
 smithy.yml:
@@ -35,16 +34,11 @@ uninstall: all
 	rm -r $(DESTDIR)$(BINDIR)/smithy
 	rm -fr $(DESTDIR)$(SHAREDIR)
 
-bin/statik:
-	mkdir -p bin
-	go mod download
-	go build -o bin/statik $(MODCACHE)/github.com/rakyll/statik@v0.1.7/statik.go
-
 gofmt:
 	go fmt ./pkg/... ./cmd/...
 
 clean:
-	rm -rf smithy smithy.yml pkg/statik smithy.1 smithy.yml.5
+	rm -rf smithy smithy.yml smithy.1 smithy.yml.5
 
 .PHONY:
 	smithy smithy.yml clean
