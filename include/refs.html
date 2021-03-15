@@ -28,9 +28,9 @@
 <table class="table">
     {{ range .Branches }}
       <tr>
-          <td>{{ .RepoName.Short }}</td>
-          <td><a href="/{{ $repo }}/log/{{ .RepoName.Short }}">log</a></td>
-          <td><a href="/{{ $repo }}/tree/{{ .RepoName.Short }}">tree</a></td>
+          <td>{{ .Name.Short }}</td>
+          <td><a href="/{{ $repo }}/log/{{ .Name.Short }}">log</a></td>
+          <td><a href="/{{ $repo }}/tree/{{ .Name.Short }}">tree</a></td>
       </tr>
     {{ end }}
 </table>
@@ -40,9 +40,9 @@
 <table class="table">
     {{ range .Tags }}
     <tr>
-        <td>{{ .RepoName.Short }}</td>
-        <td><a href="/{{ $repo }}/log/{{ .RepoName.Short }}">log</a></td>
-        <td><a href="/{{ $repo }}/tree/{{ .RepoName.Short }}">tree</a></td>
+        <td>{{ .Name.Short }}</td>
+        <td><a href="/{{ $repo }}/log/{{ .Name.Short }}">log</a></td>
+        <td><a href="/{{ $repo }}/tree/{{ .Name.Short }}">tree</a></td>
     </tr>
     {{ end }}
 </table>
