@@ -622,6 +622,83 @@ func FormatChanges(changes object.Changes) (string, error) {
 	return strings.Join(s, "\n\n\n\n"), nil
 }
 
+func PatchView(ctx *gin.Context, urlParts []string) {
+	const commitFormatDate = "Mon, 02 Jan 2006 15:04:05 -0700"
+	repoName := urlParts[0]
+	smithyConfig := ctx.MustGet("config").(SmithyConfig)
+	repoPath := filepath.Join(smithyConfig.Git.Root, repoName)
+
+	var (
+		patch string
+		err   error
+	)
+
+	repoPathExists, err := PathExists(repoPath)
+
+	if err != nil {
+		Http404(ctx)
+		return
+	}
+
+	if !repoPathExists {
+		Http404(ctx)
+		return
+	}
+
+	r, err := git.PlainOpen(repoPath)
+
+	if err != nil {
+		Http404(ctx)
+		return
+	}
+
+	commitID := urlParts[1]
+	if commitID == "" {
+		Http404(ctx)
+		return
+	}
+
+	commitHash := plumbing.NewHash(commitID)
+	commitObj, err := r.CommitObject(commitHash)
+
+	if err != nil {
+		Http404(ctx)
+		return
+	}
+
+	// TODO: If this is the first commit, we can't build the diff (#281)
+	// Therefore, we have two options: either build the diff manually or
+	// patch go-git
+	if commitObj.NumParents() == 0 {
+		Http500(ctx)
+		return
+	} else {
+		parentCommit, err := commitObj.Parent(0)
+
+		if err != nil {
+			Http500(ctx)
+			return
+		}
+
+		patchObj, err := parentCommit.Patch(commitObj)
+		patch = patchObj.String()
+	}
+
+	commitHashStr := fmt.Sprintf("From %s Mon Sep 17 00:00:00 2001", commitObj.Hash)
+	from := fmt.Sprintf("From: %s <%s>", commitObj.Author.Name, commitObj.Author.Email)
+	date := fmt.Sprintf("Date: %s", commitObj.Author.When.Format(commitFormatDate))
+	subject := fmt.Sprintf("Subject: [PATCH] %s", commitObj.Message)
+
+	stats, err := commitObj.Stats()
+	if err != nil {
+		Http500(ctx)
+		return
+	}
+
+	ctx.String(http.StatusOK, "%s\n%s\n%s\n%s\n---\n%s\n%s",
+		commitHashStr, from, date, subject, stats.String(), patch)
+}
+
 func CommitView(ctx *gin.Context, urlParts []string) {
 	repoName := urlParts[0]
 	smithyConfig := ctx.MustGet("config").(SmithyConfig)
@@ -748,6 +825,7 @@ func CompileRoutes() []Route {
 	logDefaultUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/log$`)
 	logUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/log/(?P<ref>` + label + `)$`)
 	commitUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/commit/(?P<commit>[a-z0-9]+)$`)
+	patchUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/commit/(?P<commit>[a-z0-9]+).patch`)
 
 	treeRootUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/tree$`)
 	treeRootRefUrl := regexp.MustCompile(`^/(?P<repo>` + label + `)/tree/(?P<ref>` + label + `)$`)
@@ -761,6 +839,7 @@ func CompileRoutes() []Route {
 		{Pattern: logDefaultUrl, View: LogViewDefault},
 		{Pattern: logUrl, View: LogView},
 		{Pattern: commitUrl, View: CommitView},
+		{Pattern: patchUrl, View: PatchView},
 		{Pattern: treeRootUrl, View: TreeView},
 		{Pattern: treeRootRefUrl, View: TreeView},
 		{Pattern: treeRootRefPathUrl, View: TreeView},
