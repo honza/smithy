@@ -103,12 +103,6 @@ Contributions are most welcome.  You can open a pull request on
 
 [1]: https://git-send-email.io
 
-TODO
--------------------------------------------------------------------------------
-
-* Add support for go modules
-* Add routes for commits ending in .patch
-
 License
 -------------------------------------------------------------------------------
 
