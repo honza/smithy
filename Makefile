@@ -13,7 +13,7 @@ export CGO_ENABLED=0
 
 all: smithy smithy.yml
 
-smithy: pkg/smithy/*
+smithy: go.mod pkg/smithy/*
 	go build -ldflags $(LDFLAGS) -o smithy main.go
 
 smithy.yml:
