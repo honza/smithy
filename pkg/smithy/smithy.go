@@ -628,7 +628,7 @@ func FormatChanges(changes object.Changes) (string, error) {
 }
 
 func PatchView(ctx *gin.Context, urlParts []string) {
-	const commitFormatDate = "Mon, 02 Jan 2006 15:04:05 -0700"
+	const commitFormatDate = "Mon, 2 Jan 2006 15:04:05 -0700"
 	repoName := urlParts[0]
 	smithyConfig := ctx.MustGet("config").(SmithyConfig)
 	repoPath := filepath.Join(smithyConfig.Git.Root, repoName)
