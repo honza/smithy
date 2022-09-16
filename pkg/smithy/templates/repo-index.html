@@ -2,7 +2,11 @@
 
 {{ $repo := .RepoName }}
 
+{{ if .Repo.Meta.Title }}
+<h1>{{ .Repo.Meta.Title }}</h1>
+{{ else }}
 <h1>{{ .RepoName }}</h1>
+{{ end }}
 
 <nav class="navbar navbar-expand navbar-light bg-light">
   <div class="collapse navbar-collapse" id="navbarNav">
